@@ -1,8 +1,8 @@
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <h1 className="text-4xl font-bold text-white">
-        Tailwind is Working 🚀
+    <div className="min-h-screen flex items-center justify-center bg-white font-sans">
+      <h1 className="text-2xl font-semibold text-gray-800">
+        AMS Frontend Initialized
       </h1>
     </div>
   );

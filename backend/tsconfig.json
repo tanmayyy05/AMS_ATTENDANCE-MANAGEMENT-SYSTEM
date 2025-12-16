@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    // --- File Layout (REQUIRED) ---
+    "rootDir": "./src", 
+    "outDir": "./dist", 
+
+    // --- Environment Settings (Optimized for Node.js) ---
+    "module": "CommonJS",
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "types": ["node"],
+    
+    // --- Interoperability (REQUIRED for Express) ---
+    "esModuleInterop": true,
+
+    // --- Strictness & Safety (Excellent choices!) ---
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    
+    // --- General Options ---
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    // --- (Optional style options commented out) ---
+    // "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+  }
+}

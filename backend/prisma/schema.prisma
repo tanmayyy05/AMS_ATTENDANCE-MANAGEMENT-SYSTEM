@@ -1,0 +1,9 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/client" // 💡 This tells Prisma where to put the code
+}
+
+datasource db {
+  provider = "sqlite"
+}
+// ... rest of your models

@@ -2,11 +2,15 @@ import { useState } from "react";
 import FormWrapper from "../../components/common/FormWrapper";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../services/authService";
+
 
 const Login = () => {
   // --------------------
   // State
   // --------------------
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -34,19 +38,32 @@ const Login = () => {
   // --------------------
   // Handlers
   // --------------------
-  const handleLogin = () => {
-    setHasSubmitted(true);
+  const handleLogin = async () => {
+  setHasSubmitted(true);
+  setGlobalError(null);
 
-    if (isFormInvalid) return;
+  if (isFormInvalid) return;
 
+  try {
     setIsSubmitting(true);
 
-    // simulate request
-    setTimeout(() => {
-      setGlobalError("Invalid email or password");
-      setIsSubmitting(false);
-    }, 1000);
-  };
+    const response = await login({
+      email,
+      password,
+    });
+
+    // save token
+    localStorage.setItem("token", response.token);
+
+    // redirect based on role (for now only admin)
+    navigate("/admin/dashboard");
+  } catch (error) {
+    setGlobalError("Invalid email or password");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   // --------------------
   // UI

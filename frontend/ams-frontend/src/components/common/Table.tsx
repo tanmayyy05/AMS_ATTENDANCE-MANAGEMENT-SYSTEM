@@ -1,6 +1,6 @@
 const Table = () => {
   return (
-    <div className="overflow-x-auto rounded-lg border bg-white">
+    <div className="overflow-x-auto rounded-lg border bg-white p-2">
       <table className="min-w-full border-collapse">
         <thead className="bg-gray-50">
           <tr>
@@ -17,13 +17,13 @@ const Table = () => {
         </thead>
 
         <tbody>
-          <tr className="text-gray-400">
+          <tr className="text-gray-400 hover:bg-gray-50">
             <td className="px-4 py-3 border-b">---</td>
             <td className="px-4 py-3 border-b">---</td>
             <td className="px-4 py-3 border-b">---</td>
           </tr>
 
-          <tr className="text-gray-400">
+          <tr className="text-gray-400 hower:bg-gray-50">
             <td className="px-4 py-3 border-b">---</td>
             <td className="px-4 py-3 border-b">---</td>
             <td className="px-4 py-3 border-b">---</td>

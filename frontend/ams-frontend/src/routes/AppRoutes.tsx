@@ -1,21 +1,34 @@
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "../pages/admin/Dashboard";
+
 import Login from "../pages/auth/Login";
+import Dashboard from "../pages/admin/Dashboard";
+import EmployeeDashboard from "../pages/employee/Dashboard";
+
 import ProtectedRoute from "./ProtectedRoute";
+
+// Route layouts
+import AuthLayout from "../layouts/AuthLayout";
+import AppLayout from "../layouts/AppLayout";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      {/* ---------- AUTH ROUTES ---------- */}
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} />
+      </Route>
 
+      {/* ---------- PROTECTED APP ROUTES ---------- */}
       <Route
-        path="/admin/dashboard"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <AppLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+      </Route>
     </Routes>
   );
 };

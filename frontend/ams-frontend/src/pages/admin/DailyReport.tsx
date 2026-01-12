@@ -28,7 +28,7 @@ const DailyReport = () => {
     setTimeout(() => {
       setIsLoading(false);
       setShowData(true);
-    }, 1000);
+    }, 1000); // fake API delay
   };
 
   // Summary calculations
@@ -56,11 +56,11 @@ const DailyReport = () => {
         </label>
 
         <button
-          style={{ marginLeft: "8px" }}
+          style={{ marginLeft: "10px" }}
+          disabled={!selectedDate || isLoading}
           onClick={handleViewReport}
-          disabled={!selectedDate}
         >
-          View Report
+          {isLoading ? "Loading..." : "View Report"}
         </button>
       </div>
 

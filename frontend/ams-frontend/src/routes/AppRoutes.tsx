@@ -11,6 +11,8 @@ import EditEmployee from "../pages/admin/EditEmployee";
 import AddEmployee from "../pages/admin/AddEmployee";
 
 import DailyReport from "../pages/admin/DailyReport";
+import MonthlyReport from "../pages/admin/MonthlyReport";
+
 
 
 
@@ -44,6 +46,7 @@ const AppRoutes = () => {
         <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
         <Route path="/employee/attendance" element={<Attendance />} />
         <Route path="/admin/reports/daily" element={<DailyReport />} />
+        <Route path="/admin/reports/monthly" element={<MonthlyReport />} />
 
       </Route>
     </Routes>

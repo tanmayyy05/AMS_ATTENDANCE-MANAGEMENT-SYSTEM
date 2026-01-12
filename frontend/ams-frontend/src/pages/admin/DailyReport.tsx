@@ -2,9 +2,11 @@ import { useState } from "react";
 import KpiCard from "../../components/common/KpiCard";
 
 const DailyReport = () => {
-  const [selectedDate, setSelectedDate] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Mock daily data (UI only)
   const reportData = [
@@ -23,13 +25,18 @@ const DailyReport = () => {
   ];
 
   const handleViewReport = () => {
+    if (!fromDate || !toDate || fromDate > toDate) {
+      alert("Please select a valid date range");
+      return;
+    }
+
     setIsLoading(true);
     setShowReport(false);
 
     setTimeout(() => {
       setIsLoading(false);
       setShowReport(true);
-    }, 1000); // fake API delay
+    }, 1000);
   };
 
   // KPI calculations
@@ -41,16 +48,16 @@ const DailyReport = () => {
     (e) => e.status === "Absent"
   ).length;
 
-  // ✅ EXPORT CSV
-  const exportDailyCSV = () => {
-    const headers = [
-      "Employee Name",
-      "Check In",
-      "Check Out",
-      "Status",
-    ];
+  // Combined filtering
+  const filteredData = reportData.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    const rows = reportData.map((emp) =>
+  // Export CSV
+  const exportDailyCSV = () => {
+    const headers = ["Employee Name", "Check In", "Check Out", "Status"];
+
+    const rows = filteredData.map((emp) =>
       [emp.name, emp.checkIn, emp.checkOut, emp.status].join(",")
     );
 
@@ -63,7 +70,7 @@ const DailyReport = () => {
     link.setAttribute("href", encodedUri);
     link.setAttribute(
       "download",
-      `daily-report-${selectedDate}.csv`
+      `daily-report-${fromDate}-to-${toDate}.csv`
     );
     document.body.appendChild(link);
     link.click();
@@ -74,20 +81,31 @@ const DailyReport = () => {
     <div>
       <h1>Daily Attendance Report</h1>
 
-      {/* Filter */}
-      <div style={{ marginBottom: "16px" }}>
+      {/* Date Range */}
+      <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
         <label>
-          Select Date:{" "}
+          From:
+          <br />
           <input
             type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+        </label>
+
+        <label>
+          To:
+          <br />
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
           />
         </label>
 
         <button
-          style={{ marginLeft: "10px" }}
-          disabled={!selectedDate || isLoading}
+          style={{ alignSelf: "flex-end" }}
+          disabled={isLoading}
           onClick={handleViewReport}
         >
           {isLoading ? "Loading..." : "View Report"}
@@ -95,6 +113,18 @@ const DailyReport = () => {
       </div>
 
       {isLoading && <p>Loading report...</p>}
+
+      {/* Search */}
+      {showReport && !isLoading && (
+        <div style={{ marginBottom: "12px" }}>
+          <input
+            type="text"
+            placeholder="Search employee..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      )}
 
       {/* KPI Cards */}
       {showReport && !isLoading && (
@@ -105,15 +135,22 @@ const DailyReport = () => {
         </div>
       )}
 
-      {/* Export Button */}
-      {showReport && !isLoading && (
+      {/* Export */}
+      {showReport && !isLoading && filteredData.length > 0 && (
         <div style={{ textAlign: "right", marginBottom: "12px" }}>
           <button onClick={exportDailyCSV}>Export CSV</button>
         </div>
       )}
 
+      {/* Empty State */}
+      {showReport && !isLoading && filteredData.length === 0 && (
+        <p style={{ marginTop: "20px", color: "#555" }}>
+          No attendance records found for the selected filters.
+        </p>
+      )}
+
       {/* Table */}
-      {showReport && !isLoading && (
+      {showReport && !isLoading && filteredData.length > 0 && (
         <table
           border={1}
           cellPadding={10}
@@ -128,7 +165,7 @@ const DailyReport = () => {
             </tr>
           </thead>
           <tbody>
-            {reportData.map((item, index) => (
+            {filteredData.map((item, index) => (
               <tr key={index}>
                 <td>{item.name}</td>
                 <td>{item.checkIn}</td>

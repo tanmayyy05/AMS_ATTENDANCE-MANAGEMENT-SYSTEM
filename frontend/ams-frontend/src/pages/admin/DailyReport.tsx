@@ -3,7 +3,11 @@ import { useState } from "react";
 const DailyReport = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showData, setShowData] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportSuccess, setExportSuccess] = useState("");
+  const [exportError, setExportError] = useState("");
 
   // Mock data (UI only)
   const reportData = [
@@ -23,12 +27,25 @@ const DailyReport = () => {
 
   const handleViewReport = () => {
     setIsLoading(true);
-    setShowData(false);
+    setShowReport(false);
+    setExportSuccess("");
+    setExportError("");
 
     setTimeout(() => {
       setIsLoading(false);
-      setShowData(true);
-    }, 1000); // fake API delay
+      setShowReport(true);
+    }, 1000);
+  };
+
+  const handleExportCSV = () => {
+    setIsExporting(true);
+    setExportSuccess("");
+    setExportError("");
+
+    setTimeout(() => {
+      setIsExporting(false);
+      setExportSuccess("CSV exported successfully");
+    }, 1200);
   };
 
   // Summary calculations
@@ -64,11 +81,51 @@ const DailyReport = () => {
         </button>
       </div>
 
-      {/* Loading */}
+      {!selectedDate && (
+        <p style={{ color: "#666" }}>
+          Please select a date to view the report.
+        </p>
+      )}
+
       {isLoading && <p>Loading report...</p>}
 
+      {/* Action Bar */}
+      {showReport && !isLoading && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "12px",
+          }}
+        >
+          <button
+            onClick={handleExportCSV}
+            disabled={isExporting}
+            style={{
+              padding: "6px 12px",
+              cursor: isExporting ? "not-allowed" : "pointer",
+            }}
+          >
+            {isExporting ? "Exporting..." : "Export CSV"}
+          </button>
+        </div>
+      )}
+
+      {/* Export feedback */}
+      {exportSuccess && (
+        <p style={{ color: "green", marginBottom: "10px" }}>
+          {exportSuccess}
+        </p>
+      )}
+
+      {exportError && (
+        <p style={{ color: "red", marginBottom: "10px" }}>
+          {exportError}
+        </p>
+      )}
+
       {/* Summary */}
-      {showData && !isLoading && (
+      {showReport && !isLoading && (
         <div
           style={{
             display: "flex",
@@ -94,7 +151,7 @@ const DailyReport = () => {
       )}
 
       {/* Table */}
-      {showData && !isLoading && (
+      {showReport && !isLoading && (
         <table
           border={1}
           cellPadding={10}

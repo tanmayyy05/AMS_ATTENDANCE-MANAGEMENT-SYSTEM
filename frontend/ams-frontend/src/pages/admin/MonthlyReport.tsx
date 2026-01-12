@@ -3,7 +3,11 @@ import { useState } from "react";
 const MonthlyReport = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showData, setShowData] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportSuccess, setExportSuccess] = useState("");
+  const [exportError, setExportError] = useState("");
 
   const monthlyData = [
     { name: "John Doe", present: 20, absent: 2, percent: "91%" },
@@ -12,20 +16,33 @@ const MonthlyReport = () => {
 
   const handleViewReport = () => {
     setIsLoading(true);
-    setShowData(false);
+    setShowReport(false);
+    setExportSuccess("");
+    setExportError("");
 
     setTimeout(() => {
       setIsLoading(false);
-      setShowData(true);
-    }, 1000); // fake API delay
+      setShowReport(true);
+    }, 1000);
+  };
+
+  const handleExportCSV = () => {
+    setIsExporting(true);
+    setExportSuccess("");
+    setExportError("");
+
+    setTimeout(() => {
+      setIsExporting(false);
+      setExportSuccess("CSV exported successfully");
+    }, 1200);
   };
 
   return (
     <div>
       <h1>Monthly Attendance Report</h1>
 
-      {/* Month Selector */}
-      <div style={{ marginTop: "16px", marginBottom: "16px" }}>
+      {/* Filters */}
+      <div style={{ marginBottom: "16px" }}>
         <label>
           Select Month:
           <br />
@@ -45,34 +62,64 @@ const MonthlyReport = () => {
         </button>
       </div>
 
-      {/* Loading */}
-      {isLoading && <p>Loading report...</p>}
-
-      {/* Empty State */}
       {!selectedMonth && (
-        <p style={{ color: "#666", marginTop: "20px" }}>
+        <p style={{ color: "#666" }}>
           Please select a month to view the attendance report.
         </p>
       )}
 
-      {/* ===== SUMMARY CARDS ===== */}
-      {showData && !isLoading && (
-        <div style={{ display: "flex", gap: "16px", marginTop: "24px" }}>
+      {isLoading && <p>Loading report...</p>}
+
+      {/* Action Bar */}
+      {showReport && !isLoading && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "12px",
+          }}
+        >
+          <button
+            onClick={handleExportCSV}
+            disabled={isExporting}
+            style={{
+              padding: "6px 12px",
+              cursor: isExporting ? "not-allowed" : "pointer",
+            }}
+          >
+            {isExporting ? "Exporting..." : "Export CSV"}
+          </button>
+        </div>
+      )}
+
+      {/* Export feedback */}
+      {exportSuccess && (
+        <p style={{ color: "green", marginBottom: "10px" }}>
+          {exportSuccess}
+        </p>
+      )}
+
+      {exportError && (
+        <p style={{ color: "red", marginBottom: "10px" }}>
+          {exportError}
+        </p>
+      )}
+
+      {/* Summary */}
+      {showReport && !isLoading && (
+        <div style={{ display: "flex", gap: "16px", marginBottom: "24px" }}>
           <div style={{ border: "1px solid #ccc", padding: "12px", width: "180px" }}>
             <h4>Total Employees</h4>
             <p>25</p>
           </div>
-
           <div style={{ border: "1px solid #ccc", padding: "12px", width: "180px" }}>
             <h4>Working Days</h4>
             <p>22</p>
           </div>
-
           <div style={{ border: "1px solid #ccc", padding: "12px", width: "180px" }}>
             <h4>Avg Attendance</h4>
             <p>91%</p>
           </div>
-
           <div style={{ border: "1px solid #ccc", padding: "12px", width: "180px" }}>
             <h4>Total Absents</h4>
             <p>14</p>
@@ -80,12 +127,12 @@ const MonthlyReport = () => {
         </div>
       )}
 
-      {/* ===== MONTHLY TABLE ===== */}
-      {showData && !isLoading && (
+      {/* Table */}
+      {showReport && !isLoading && (
         <table
           border={1}
           cellPadding={8}
-          style={{ marginTop: "24px", width: "100%" }}
+          style={{ width: "100%", maxWidth: "900px" }}
         >
           <thead>
             <tr>
